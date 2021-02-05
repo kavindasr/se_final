@@ -8,7 +8,7 @@ const databaseLoader = require('./database');
  * @return {void}
  */
 
-const loaders = async ({ expressApp }) => {
+const loaders = async ({ expressApp, httpServer }) => {
     await expressLoader({ app: expressApp });
     console.log('Express Intialized');
 

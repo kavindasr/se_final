@@ -2,21 +2,32 @@ const config = require('./config');
 const loaders = require('./loaders');
 const express = require('express');
 const routes = require('./api');
+const http = require('http');
+const socketio = require('socket.io');
 const apiErrorHandler = require('./helpers/apiErrorHandler');
+const socket = require('./services/webSocket');
 
 async function startServer() {
 
     const app = express();
+    const server = http.createServer(app);
+    const io = socketio(server, {cors: {
+        origin: config.react_url,
+        methods: ["GET", "POST"]
+    }});
 
     await loaders({ expressApp: app });
     
     //handle routes
     routes.endPointsHandler(app);
 
+    
     //Error handling middleware
     app.use(apiErrorHandler);
-    
-    app.listen(config.port, err => {
+
+    socket(io);
+
+    server.listen(config.port, err => {
         if (err) {
         console.log(err);
         return;
